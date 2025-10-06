@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "question": "cm m,cx,m",
+        "image": "uploads\/68dc1983a6d8d.jpg",
+        "options": [
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        "correct": 0,
+        "explanation": "xs,xm,smx,smxms.xs,",
+        "category": "verbal",
+        "difficulty": "easy",
+        "created_at": "2025-09-30 19:55:15"
+    }
+]
