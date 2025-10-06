@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: qutrat100_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./quiz_backup.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3307:3306"
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+  wordpress:
+    image: wordpress:6.4-php8.1-apache
+    container_name: qutrat100_web
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp_
+      WORDPRESS_DEBUG: 1
+    volumes:
+      - ./wp-admin:/var/www/html/wp-admin
+      - ./wp-includes:/var/www/html/wp-includes
+      - ./wp-content:/var/www/html/wp-content
+      - ./index.php:/var/www/html/index.php
+      - ./wp-activate.php:/var/www/html/wp-activate.php
+      - ./wp-blog-header.php:/var/www/html/wp-blog-header.php
+      - ./wp-comments-post.php:/var/www/html/wp-comments-post.php
+      - ./wp-cron.php:/var/www/html/wp-cron.php
+      - ./wp-links-opml.php:/var/www/html/wp-links-opml.php
+      - ./wp-load.php:/var/www/html/wp-load.php
+      - ./wp-login.php:/var/www/html/wp-login.php
+      - ./wp-mail.php:/var/www/html/wp-mail.php
+      - ./wp-settings.php:/var/www/html/wp-settings.php
+      - ./wp-signup.php:/var/www/html/wp-signup.php
+      - ./wp-trackback.php:/var/www/html/wp-trackback.php
+      - ./xmlrpc.php:/var/www/html/xmlrpc.php
+      - ./wp-quiz-api.php:/var/www/html/wp-quiz-api.php
+      - ./quiz.php:/var/www/html/quiz.php
+      - ./admin.php:/var/www/html/admin.php
+      - ./demo.php:/var/www/html/demo.php
+      - ./page-quiz.php:/var/www/html/page-quiz.php
+      - ./includes:/var/www/html/includes
+      - ./api:/var/www/html/api
+      - ./assets:/var/www/html/assets
+      - ./uploads:/var/www/html/uploads
+      - ./.htaccess:/var/www/html/.htaccess
+      - ./wp-config-docker.php:/var/www/html/wp-config.php
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: qutrat100_phpmyadmin
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: wordpress
+      PMA_PASSWORD: wordpress
+      UPLOAD_LIMIT: 100M
+
+volumes:
+  db_data:
